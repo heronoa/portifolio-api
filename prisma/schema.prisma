@@ -1,0 +1,46 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            String @id @default(uuid())
+  email         String @unique
+  hash_password String @unique
+  acess_token   String
+  permission    Int
+}
+
+model Costumers {
+  costumer_id String   @id @default(uuid())
+  debt_ids    String[]
+  name        String   @db.VarChar(55)
+  phone       String   @unique @db.VarChar(15)
+  email       String   @unique @db.VarChar(255)
+  createdAt   DateTime @default(now()) @map("created_at")
+  updatedAt   DateTime @updatedAt @map("updated_at")
+  adress      String
+  cep         String
+  last_name   String
+
+  @@map("costumers")
+}
+
+// TODO: Add initial value of the debt
+model Debts {
+  debt_id        String     @id @default(uuid())
+  costumer_id    String     @unique @default(uuid())
+  payment_method String
+  initial_value  Float
+  initial_date   DateTime
+  value          Float      @unique
+  fee            Decimal
+  due_dates      DateTime[]
+  payed          Float
+  createdAt      DateTime   @default(now()) @map("created_at")
+  updatedAt      DateTime   @updatedAt @map("updated_at")
+}
